@@ -1,6 +1,11 @@
 package api.model
 
+import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import api.PokemonRepository
+import domain.Pokemon
 import domain.PokemonType
+import view.PokemonAdapter
 
 data class PokemonsApiResult(
     val count: Int,
@@ -13,11 +18,10 @@ data class PokemonResult(
     val name: String,
     val url: String
 )
-
 data class PokemonApiResult(
     val id: Int,
     val name: String,
-    val types: PokemonTypeSlot
+    val types: List<PokemonTypeSlot>
 )
 
 data class PokemonTypeSlot(

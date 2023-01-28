@@ -1,11 +1,8 @@
 package api
 
 import android.util.Log
+import api.model.PokemonApiResult
 import api.model.PokemonsApiResult
-import com.bumptech.glide.Glide.init
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,20 +19,15 @@ object PokemonRepository {
         service = retrofit.create(PokemonService::class.java)
     }
 
-    fun listPokemons(limit: Int = 151){
+    fun listPokemons(limit: Int = 151): PokemonsApiResult?{
         val call = service.listPokemons(limit)
-        call.enqueue(object : Callback<PokemonsApiResult>{
-            override fun onResponse(
-                call: Call<PokemonsApiResult>,
-                response: Response<PokemonsApiResult>
-            ) {
-                Log.d("POKEMON_API","Pokemons loaded")
-            }
 
-            override fun onFailure(call: Call<PokemonsApiResult>, t: Throwable) {
-                Log.e("POKEMON_API","Erro during pokemon load",t)
-            }
+        return call.execute().body()
+    }
 
-        })
+    fun getPokemon(number: Int): PokemonApiResult? {
+        val call = service.getPokemon(number)
+
+        return call.execute().body()
     }
 }

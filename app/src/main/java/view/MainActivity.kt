@@ -1,34 +1,39 @@
 package view
-//01h:19min
-import androidx.appcompat.app.AppCompatActivity
+
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import api.PokemonRepository
 import com.example.myapplication.R
 import domain.Pokemon
-import domain.PokemonType
+import viewmodel.PokemonViewModel
+import viewmodel.PokemonViewModelFactory
 
 class MainActivity : AppCompatActivity() {
+    private val recyclerView by lazy {
+        findViewById<RecyclerView>(R.id.rvPokemons)
+    }
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, PokemonViewModelFactory())
+            .get(PokemonViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val llm = LinearLayoutManager(this)
+        llm.orientation = LinearLayoutManager.VERTICAL
 
-        val recyclerView = findViewById<RecyclerView>(R.id.rvPokemons)
+        viewModel.pokemons.observe(this, Observer {
+            loadRecyclerView(it)
+        })
+    }
 
-        val bulbasaur = Pokemon("https://i.pinimg.com/736x/1f/21/f2/1f21f25d27e1e74d44e4d6523311e10f--pokemon-umbreon-pokemon-go.jpg",2, "Bulbasaur",listOf(
-                PokemonType("Water")
-            )
-        )
-
-        val pokemons = listOf(
-            bulbasaur,bulbasaur,bulbasaur
-        )
-
-        val pokemonsApi = PokemonRepository.listPokemons()
-
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+    private fun loadRecyclerView(pokemons: List<Pokemon?>) {
+        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = PokemonAdapter(pokemons)
     }
 }
